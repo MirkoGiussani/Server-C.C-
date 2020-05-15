@@ -33,20 +33,36 @@ public class EchoServerCC {
 
                     int c;
                     String response = "";
+                    String responseSwitch = "";
                     BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                     PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
 
                     System.out.print("connection received: [" + client.getInetAddress().getHostAddress() + "] ");
-                    response = in.readLine();
-                    
-                    while (!(response.equals("exit"))) {
-                        System.out.println("string received = " + response);    //scrive sulla 
-                        out.write(response.toUpperCase());  //
-                        response = in.readLine();
+                    response = in.readLine();   //tutta la stringa
+                    responseSwitch = response.substring(0, response.indexOf(":"));
+                    String [] separatore;
+                    switch(responseSwitch){
+                        case "LOG":  //     LOG: name: passw
+                            separatore = response.split(":");
+                            String nomeUtente = separatore[1];
+                            String passw = separatore[2];
+                            out.write(response.toUpperCase());  //prova per mandare un messaggio dal server al client
+                            break;
+                        case "CA": //       CA: nome: cognome: telefono: CFiscale
+                            separatore = response.split(":");
+                            String nome = separatore[1];
+                            String cognome = separatore[2];
+                            String NumTelefono = separatore[3];
+                            String CodFiscale = separatore[4];
+                            break;
                     }
-                    System.out.println("exit for while");
-                    client.close();
                     
+                    System.out.println("string received = " + response);    //scrive sulla socket
+                    out.write(response.toUpperCase()); 
+                    response = in.readLine();
+
+                    client.close();
+
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 } finally {
@@ -64,6 +80,4 @@ public class EchoServerCC {
 
         }
     }
-    }
-    
-
+}
